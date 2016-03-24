@@ -1,0 +1,27 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET        /                                 controllers.Application.index
+GET        /crossdomain.xml                  controllers.Application.crossdomain
+GET        /connect/:ip/:port                controllers.Application.sumoConnect(ip:String,port:Int)
+GET        /forward/:id                      controllers.Application.forward(id: Int)
+GET        /forward2/:id/:speed/:time        controllers.Application.forward2(id: Int, speed: Int, time: Int)
+GET        /backward/:id                     controllers.Application.backward(id: Int)
+GET        /right/:id                        controllers.Application.right(id: Int)
+GET        /righ2/:id/:degrees               controllers.Application.right2(id: Int, degrees : Int)
+GET        /left/:id                         controllers.Application.left(id: Int)
+GET        /left2/:id/:degrees               controllers.Application.left2(id: Int, degrees : Int)
+GET        /jump/:id/:jumpType               controllers.Application.jump(id: Int, jumpType:String)
+GET        /trick/:id/:trickType             controllers.Application.trick(id: Int, trickType:String)
+
+GET        /close                            controllers.Application.sumoClose()
+
+
+GET        /poll                             controllers.Application.poll()
+
+GET        /reset_all                        controllers.Application.reset()
+
+# Map static resources from the /public folder to the /assets URL path
+GET        /assets/*file                     controllers.Assets.at(path="/public", file)
