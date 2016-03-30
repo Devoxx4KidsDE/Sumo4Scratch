@@ -1,10 +1,10 @@
 package controllers
 
-import de.bischinger.parrot.commands.movement.Pcmd
-import de.bischinger.parrot.controller.DroneController
-import de.bischinger.parrot.network._
+import de.bischinger.parrot.control.DroneController
+import de.bischinger.parrot.lib.command.movement.Pcmd
+import de.bischinger.parrot.lib.network.{WirelessLanDroneConnection, DroneConnection}
+
 import play.api._
-import play.api.libs.ws.WS
 import play.api.mvc._
 
 /**
@@ -15,11 +15,11 @@ import play.api.mvc._
  * the command is still running. Note that for simplicity currently only one command at a time is
  * allowed to be executed however this could be easily extend by not using movementId but a set of ids
  *
- * Work in Progress
- * - Reconnecting or Closing the connection is not yet as stable as I would wish. There needs to be some
- *   improvement which might be due to incorrect use of the drone library --> Tobias?
- * - All commands currently expect that sumoConnect has been called before and tragically fail if not, which of
- *   course should be improved by first asking if dronecontroller is already initialized.
+ * The following is based on Scratch' extension mechanism which has been documented here:
+ * http://wiki.scratch.mit.edu/wiki/Scratch_Extension
+ * but in particalur in the the following document:
+ * http://wiki.scratch.mit.edu/w/images/ExtensionsDoc.HTTP-9-11.pdf
+ *
  */
 
 object Application extends Controller {
@@ -32,6 +32,8 @@ object Application extends Controller {
 
   var droneConnection: DroneConnection = null
   var droneController: DroneController = null
+
+  var initialized = false
 
   def index = Action {
     Ok(views.html.index(""))
@@ -57,7 +59,8 @@ object Application extends Controller {
       // withoutQueue, so commands become synchronous
       droneConnection = new WirelessLanDroneConnection(ip, port, wlan)
       droneController = new DroneController(droneConnection)
-      Ok
+      initialized = true
+      OK
     } catch {
       case e: Exception => ServiceUnavailable
     }
@@ -66,64 +69,60 @@ object Application extends Controller {
 
   def sumoClose = Action {
     Logger.info(s"Closing connection: $ip : $port at $wlan")
-    if (droneConnection!=null && droneConnection != null) {
+    if (droneConnection!=null && droneController != null) {
       droneController.close()
     }
     Ok
   }
 
-  def forward (id: Int) = Action {
-    Logger.info(s"vorwärts ($id)")
+  /**
+   * Allows moving the drone by speed and time.
+   * Note: time has only the granularity of 500ms as one forward command runs the drone roughly 500ms
+   * @param id Scratch command id
+   * @param speed as number from 10 to ~100
+   * @param time in ms but has a granularity of 500ms
+   * @return
+   */
+  def forward (id: Int, speed: Int, time: Int) = Action {
+    Logger.info(s"forward ($id / $speed / $time)")
     runAndMonitorCommand (id) {
-      droneController.forward()
+      var runtime = 0L
+      var start = System.currentTimeMillis()
+      while (runtime < time) {
+        droneController.pcmd(speed,0)
+        Thread.sleep(500)
+        runtime = System.currentTimeMillis() - start
+      }
     }
+
     Ok
 
   }
 
-  def forward2 (id: Int, speed: Int, timeMs: Int) = Action {
-    Logger.info(s"vorwärts ($id) mit der Geschwindigkeit $speed für $timeMs Millisekunden")
+  def backward (id: Int, speed: Int, time: Int)  = Action {
+    Logger.info(s"backward ($id / $speed / $time)")
     runAndMonitorCommand (id) {
-        droneController.send(Pcmd.pcmd(speed, 0, timeMs))
+      var runtime = 0L
+      var start = System.currentTimeMillis()
+      while (runtime < time) {
+        droneController.pcmd(-speed,0)
+        Thread.sleep(500)
+        runtime = System.currentTimeMillis() - start
+      }
     }
     Ok
   }
 
-  def backward (id: Int) = Action {
-    Logger.info("rückwärts")
-    runAndMonitorCommand (id) {
-      droneController.backward()
-    }
-    Ok
-  }
-
-  def left (id: Int) = Action {
-    Logger.info("links")
-    runAndMonitorCommand (id) {
-        droneController.left()
-    }
-    Ok
-
-  }
-
-  def left2 (id: Int, degrees: Int) = Action {
-    Logger.info("links $degrees")
+  def left (id: Int, degrees: Int) = Action {
+    Logger.info("left $degrees")
     runAndMonitorCommand (id) {
         droneController.left(degrees)
     }
     Ok
   }
 
-  def right (id: Int) = Action {
-    Logger.info("rechts")
-    runAndMonitorCommand (id) {
-      droneController.right()
-    }
-    Ok
-  }
-
-  def right2 (id: Int, degrees: Int) = Action {
-    Logger.info("rechts $degrees")
+  def right (id: Int, degrees: Int) = Action {
+    Logger.info("right $degrees")
     runAndMonitorCommand (id) {
       droneController.right(degrees)
     }
@@ -131,28 +130,28 @@ object Application extends Controller {
   }
 
   def jump (id: Int, jumpType:String) = Action {
-    Logger.info(s"springe $jumpType")
+    Logger.info(s"jump $jumpType")
 
     runAndMonitorCommand (id) {
       jumpType match {
-        case "hoch" => droneController.jumpHigh()
-        case "weit" => droneController.jumpLong()
+        case "hoch" | "High" => droneController.jumpHigh()
+        case "weit" | "Far" => droneController.jumpLong()
       }
     }
     Ok
   }
 
   def trick (id: Int, trick:String) = Action {
-    Logger.info(s"springe $trick")
+    Logger.info(s"Do trick $trick")
 
     runAndMonitorCommand (id) {
       trick match {
-        case "Drehung" => droneController.spin()
-        case "Drehsprung" => droneController.spinJump()
-        case "Tippen" => droneController.tap()
-        case "Metronom" => droneController.metronome()
-        case "Ondulation" => droneController.ondulation()
-        case "Schwanken" => droneController.slowShake()
+        case "Drehung" | "Spin" => droneController.spin()
+        case "Drehsprung"| "JumpAndSpin" => droneController.spinJump()
+        case "Tippen" | "Tap" => droneController.tap()
+        case "Metronom" | "Metronome" => droneController.metronome()
+        case "Ondulation" | "Ondulation" => droneController.ondulation()
+        case "Schwanken" | "Shake" => droneController.slowShake()
         case "Slalom" => droneController.slalom()
       }
     }
@@ -181,7 +180,7 @@ object Application extends Controller {
   def reset() = Action {
     Logger.info("resetting DroneConnection and running Command")
     movementId = 0
-    if (droneConnection!=null && droneConnection != null) {
+    if (droneConnection!=null && droneController != null) {
       droneController.close()
     }
     Ok
@@ -192,11 +191,13 @@ object Application extends Controller {
    * The way it works is that for specially marked command scratch provides a unique id for the
    * call. As long as the command is being executed this id should be reported back to Scratch
    * when it calls the poll service
-   * @param id
-   * @param command
+   * @param id unique id of a sent command to keep track of it that is still running
+   * @param command command that should be executed
    * @return
    */
   def runAndMonitorCommand  (id: Int)(command: => Unit): Unit = {
+    if (!initialized)
+      return
     movementId = id
     command
     movementId = 0
