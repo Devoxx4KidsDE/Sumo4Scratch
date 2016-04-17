@@ -46,8 +46,8 @@ __To build the server__ the setup is pretty simple. All you need to have, is at 
 * Then you can go to the "more block" section of script tab and you will recognize the Jumping Sumo section.
 * Drop the blocks into the code and have fun.
 
-[bug]: https://scratch.mit.edu/discuss/topic/191003/
-*Note:* In the current Scratch version I am using (444.4) there is a glitch when loading a new scratch program as the blocks become invalid after loading. Don't worry: Just switch the language back and forth and everything is fine afain (see [bug] for more information). As far as Chris, the Scratch Dev Lead, has told me it should be fixed soon. 
+[localization-behaviour]: https://scratch.mit.edu/discuss/topic/191003/
+*Note:* In the current Scratch version I am using (445.2), extensions do not really have a complete support for localizations. Scratch seems to save the extension configuration in your program. See more at this description where I explained that [localization-behaviour].
 
 ## Using Sumo for Scratch
 
@@ -63,8 +63,10 @@ The usage of the blocks is straight forward and rather obvious.
 
 Note: Currently only command at a time is supported. 
 	
-[sumo-programm.sb2]: https://github.com/Devoxx4KidsDE/sumo4scratch/tree/master/Scratch/sumo-programm.sb2
-There is a __sample program__ for Scratch that you can find in the root directory of the project which is called [sumo-programm.sb2].
+[sumo-programm_de.sb2]: https://github.com/Devoxx4KidsDE/sumo4scratch/tree/master/Scratch/de/sumo-programm.sb2
+[sumo-programm_en.sb2]: https://github.com/Devoxx4KidsDE/sumo4scratch/tree/master/Scratch/en/sumo-programm.sb2
+
+There is a __sample program__ for Scratch for __each__ language that you can find in the root directory of the project which is called [sumo-programm_de.sb2] or [sumo-programm_en.sb2] .
 
 This is how it looks like in Scratch:
 
