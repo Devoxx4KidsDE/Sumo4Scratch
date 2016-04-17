@@ -3,9 +3,9 @@
 	"blockSpecs": [
 	    [" ", "Connect Sumo IP %s Port %n", "connect", "192.168.2.1", 44444],
 		["w", "Forward with speed %n for %n ms", "forward", 40, 500],
-		["w", "Forward ", "forward"],
+		["w", "Forward ", "forward2"],
 		["w", "Backwards with speed %n for %n ms", "backward", 40, 500],
-		["w", "Backwards", "backward"],
+		["w", "Backwards", "backward2"],
 		["w", "Right", "right"],
 		["w", "Left", "left"],
 		["w", "Left by %n degrees", "left", 45],
