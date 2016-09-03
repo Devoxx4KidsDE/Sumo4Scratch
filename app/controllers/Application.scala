@@ -94,7 +94,6 @@ object Application extends Controller {
         runtime = System.currentTimeMillis() - start
       }
     }
-
     Ok
 
   }
@@ -114,7 +113,7 @@ object Application extends Controller {
   }
 
   def left (id: Int, degrees: Int) = Action {
-    Logger.info("left $degrees")
+    Logger.info(s"left $degrees")
     runAndMonitorCommand (id) {
         droneController.left(degrees)
     }
@@ -122,7 +121,7 @@ object Application extends Controller {
   }
 
   def right (id: Int, degrees: Int) = Action {
-    Logger.info("right $degrees")
+    Logger.info(s"right $degrees")
     runAndMonitorCommand (id) {
       droneController.right(degrees)
     }

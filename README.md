@@ -21,14 +21,15 @@ Proxy __Server__ Implementation __to bridge Jumping Sumo commands__ within the [
 
 [latest release]: https://github.com/Devoxx4KidsDE/sumo4scratch/tree/master/release/sumo4scratch.zip
 
-* __Download__: You can just download the [latest release]
+* __Download__: You can just download the [latest release] which is in the release folder of this repository.
 
 * Unpack the zip file, goto \bin-directory and start "sumo4scratch"
+* Note: If you get a permission denied on a Mac then make sure it has the right file permissions. A chmods 777 sumo4scratch will help then.
 * This will run the server listening on port 9000
 
 __To build the server__ the setup is pretty simple. All you need to have, is at least Java 8 and [activator] installed
 
-* To build a standalone server you need to have [activator] installed on your machine (something that any scala developer will have anyway). 
+* To build a standalone server you need to have [activator] installed on your machine (something that any scala developer will have anyway).
 * Go to the homedirectory of your project and type activator (it should come up with [ Sumo4Scratch ] in the prompt.)
 * Enter "dist" and return. It will then build a zip-file with all required dependencies. It will tell you at the end what the location is where the zip was saved.
 * Now you can distribute that zip file to anyone. The system that you run it on should have at least Java 8 installed.
@@ -45,13 +46,14 @@ __To build the server__ the setup is pretty simple. All you need to have, is at 
 * After you have started Scratch, open "File" while *holding SHIFT* at the same time. This reveals a secret menu entry "Import Experimental Extension". Now you can chose the file [sumo4Scratch.s2e-german] or [sumo4Scratch.s2e-english] which will be loaded by scratch.
 * Then you can go to the "more block" section of script tab and you will recognize the Jumping Sumo section.
 * Drop the blocks into the code and have fun.
+* One more thing: of course you need to connect your wireless to the sumo first to be able to connect to it.
 
 [localization-behaviour]: https://scratch.mit.edu/discuss/topic/191003/
 *Note:* In the current Scratch version I am using (445.2), extensions do not really have a complete support for localizations. Scratch seems to save the extension configuration in your program. See more at this description where I explained that [localization-behaviour].
 
 ## Using Sumo for Scratch
 
-The usage of the blocks is straight forward and rather obvious. 
+The usage of the blocks is straight forward and rather obvious.
 
 * use the *Connection* Block first, when a scratch program is started. With the block you can define to which drone you like to connect. If you have only one drone, just go for the default.
 * There is also a *Sumo off* with which you can disconnect that can be used. Of course, after that you need use the *Connect* again
@@ -61,8 +63,8 @@ The usage of the blocks is straight forward and rather obvious.
 	* Jump high and far
 	* Do some __tricks__
 
-Note: Currently only command at a time is supported. 
-	
+Note: Currently only command at a time is supported.
+
 [sumo-programm_de.sb2]: https://github.com/Devoxx4KidsDE/sumo4scratch/tree/master/Scratch/de/sumo-programm.sb2
 [sumo-programm_en.sb2]: https://github.com/Devoxx4KidsDE/sumo4scratch/tree/master/Scratch/en/sumo-programm.sb2
 
