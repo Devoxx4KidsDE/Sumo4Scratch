@@ -4,15 +4,13 @@
 # ![Devoxx4Kids](./app/views/jumping-sumo.jpg)  Sumo4scratch  ![Devoxx4Kids](./app/views/jumping-sumo-flipped.jpg)
 *from Stefan Höhn*
 
--- (beta version) --
-
 [Tobias Schneider]: https://github.com/derTobsch
 [Scratch-Offline-Editor]: https://scratch.mit.edu/scratch2download/
 [Jumping Sumo Drone]: http://www.parrot.com/usa/products/jumping-sumo/
 [Parrot]: http://www.parrot.com/
-Proxy __Server__ Implementation __to bridge Jumping Sumo commands__ within the [Scratch-Offline-Editor] with the help of the [DroneController-Library] (by [Tobias Schneider]) via Wireless to the [Jumping Sumo Drone] from [Parrot] as well as the necessary __Scratch Extension__.
+Proxy __Server__ Implementation __to bridge Jumping Sumo commands__ within the [Scratch-Offline-Editor] with the help of the [controllers.DroneController-Library] (by [Tobias Schneider]) via Wireless to the [Jumping Sumo Drone] from [Parrot] as well as the necessary __Scratch Extension__.
 
-[DroneController-Library]: https://github.com/Devoxx4KidsDE/drone-controller
+[controllers.DroneController-Library]: https://github.com/Devoxx4KidsDE/drone-controller
 [activator]: https://www.lightbend.com/activator/download
 
 ## Instructions

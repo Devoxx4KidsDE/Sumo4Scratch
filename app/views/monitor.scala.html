@@ -1,0 +1,155 @@
+@(message: String)
+
+<html>
+    <head>
+        <script src="assets/javascripts/jquery-1.9.0.min.js"></script>
+        <script>
+
+
+
+var noise;
+var img;
+var p0 = document.getElementById("p0");
+var p1 = document.getElementById("p1");
+var p2 = document.getElementById("p2");
+var p3 = document.getElementById("p3");
+var p4 = document.getElementById("p4");
+var p5 = document.getElementById("p5");
+var p6 = document.getElementById("p6");
+var p7 = document.getElementById("p7");
+var p8 = document.getElementById("p8");
+
+function init() {
+
+    noise = document.getElementById("white");
+    img = document.getElementById("monitor");
+
+    img.onload = function () {
+        img.style.display = "inline";
+        noise.style.display ="none";
+        var videoon;
+        var photoavailable;
+
+        $.ajax({ type: "GET",
+            url: "app/isframeavailable",
+            async: false,
+            success : function(text)
+            {
+                photoavailable = text;
+            },
+            error : function(text)
+            {
+            }
+        });
+
+        $.ajax({ type: "GET",
+            url: "app/isvideoon",
+            async: false,
+            success : function(text)
+            {
+                videoon = text;
+            },
+            error : function(text)
+            {
+            }
+        });
+
+        if (videoon=="yes" && photoavailable=="yes") {
+            noise.style.display ="none";
+            img.style.display = "inline";
+        } else if (videoon=="no" && photoavailable=="yes") {
+            noise.style.display ="inline";
+            img.style.display = "inline";
+        } else if (videoon=="yes" && photoavailable=="no") {
+            noise.style.display ="inline";
+            img.style.display = "no";
+        } else if (videoon=="no" && photoavailable=="no") {
+            noise.style.display ="none";
+            img.style.display = "none";
+        }
+    };
+    img.onerror = function () {
+        noise.style.display ="inline";
+        img.style.display = "none";
+
+    };
+
+    var p0 = document.getElementById("p0");
+    var p1 = document.getElementById("p1");
+    var p2 = document.getElementById("p2");
+    var p3 = document.getElementById("p3");
+    var p4 = document.getElementById("p4");
+    var p5 = document.getElementById("p5");
+    var p6 = document.getElementById("p6");
+    var p7 = document.getElementById("p7");
+    var p8 = document.getElementById("p8");
+
+    p0.addEventListener("error",  function () { checkPhotoSize(p0);});
+    p1.addEventListener("error",  function () { checkPhotoSize(p1);});
+    p2.addEventListener("error",  function () { checkPhotoSize(p2);});
+    p3.addEventListener("error",  function () { checkPhotoSize(p3);});
+    p4.addEventListener("error",  function () { checkPhotoSize(p4);});
+    p5.addEventListener("error",  function () { checkPhotoSize(p5);});
+    p6.addEventListener("error",  function () { checkPhotoSize(p6);});
+    p7.addEventListener("error",  function () { checkPhotoSize(p7);});
+    p8.addEventListener("error",  function () { checkPhotoSize(p8);});
+
+/*
+    // doesn´t work ... why?
+    for (i=0; i<9; i++) {
+        var p = document.getElementById("p"+i);
+        p.addEventListener("error",  function () { checkPhotoSize(p);});
+    }
+*/
+
+    refreshVideo();
+    refreshPhotos();
+}
+
+function refreshVideo() {
+    img.src = "app/videoframe" + "?t=" + new Date().getTime();
+    setTimeout("refreshVideo()", 50);
+}
+
+function checkPhotoSize(image) {
+    if (image.naturalHeight==0) {
+        image.src = "assets/images/whitenoise.gif";
+    }
+}
+
+function refreshPhotos() {
+    for (i=0; i<9; i++) {
+        p = document.getElementById("p"+i);
+        p.src = "app/photo/"+i + "?t=" + new Date().getTime();
+    }
+
+    setTimeout("refreshPhotos()", 2000);
+}
+
+</script>
+        <title>Jumping Sumo Video Monitor</title>
+    </head>
+
+    <body onload="JavaScript:init();" style="background-image: url('assets/images/mars.png'); background-repeat: no-repeat">
+
+        <div id='d1' style="position:absolute; top:100px; left:400px; z-index:10">
+            <!--canvas id="canvas" style="border: 1px solid black"/-->
+            <img id="monitor" src="" style="position: absolute; top: 0; left:0; border: 1px solid black" >
+            <img id="white" src="assets/images/whitenoise.gif" width="640px" height="480px" style="opacity: 0.4; border: 1px solid black">
+        </div>
+        <div style="position:absolute; top:40px; left:400px; z-index:10">
+            <img id="p0" width="64" height="48" src="" style="border: 1px solid black; ">
+            <img id="p1" width="64" height="48" src="" style="border: 1px solid black; margin-left: 2px">
+            <img id="p2" width="64" height="48" src="" style="border: 1px solid black; margin-left: 2px">
+            <img id="p3" width="64" height="48" src="" style="border: 1px solid black; margin-left: 2px">
+            <img id="p4" width="64" height="48" src="" style="border: 1px solid black; margin-left: 2px">
+            <img id="p5" width="64" height="48" src="" style="border: 1px solid black; margin-left: 2px">
+            <img id="p6" width="64" height="48" src="" style="border: 1px solid black; margin-left: 2px">
+            <img id="p7" width="64" height="48" src="" style="border: 1px solid black; margin-left: 2px">
+            <img id="p8" width="64" height="48" src="" style="border: 1px solid black; margin-left: 2px">
+
+
+        </div>
+
+    </body>
+</html>
