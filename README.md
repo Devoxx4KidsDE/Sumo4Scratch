@@ -59,14 +59,18 @@ The usage of the blocks is straight forward and rather obvious.
 	* Move in any direction (even with providing __speed and time__)
 	* Turn by providing the angle in degrees
 	* Jump high and far
+	* Show __video and take photos__ (new!)
 	* Do some __tricks__
 
-Note: Currently only command at a time is supported.
 
 [sumo-programm_de.sb2]: https://github.com/Devoxx4KidsDE/sumo4scratch/tree/master/Scratch/de/sumo-programm.sb2
 [sumo-programm_en.sb2]: https://github.com/Devoxx4KidsDE/sumo4scratch/tree/master/Scratch/en/sumo-programm.sb2
 
 There is a __sample program__ for Scratch for __each__ language that you can find in the root directory of the project which is called [sumo-programm_de.sb2] or [sumo-programm_en.sb2] .
+
+Also there is a __cool web page__ that allows to show the __video__ of the drone and to show __captured photos__ which can be accessed via http://localhost:9000/monitor.
+
+![Video and Photo web page](./monitor.png)
 
 This is how it looks like in Scratch:
 
