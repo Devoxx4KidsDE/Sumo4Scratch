@@ -30,6 +30,9 @@ function init() {
         var videoon;
         var photoavailable;
 
+        // I know it would be more elegant to retrieve all information via one method but currently I don´t have the time
+        // to refactor it
+
         $.ajax({ type: "GET",
             url: "app/isframeavailable",
             async: false,

@@ -50,6 +50,10 @@ public class DroneController implements AutoCloseable {
     private VideoController videoController = new VideoController(this);
     private AudioController audioController = new AudioController(this);
 
+    private static byte batteryState = 0;
+
+    private BatteryListener batteryListener = BatteryListener.batteryListener(b -> batteryState = b);
+
     public DroneController(DroneConnection droneConnection) {
 
         LOGGER.info("Creating controllers.DroneController");
@@ -57,6 +61,7 @@ public class DroneController implements AutoCloseable {
 
         try {
             droneConnection.connect();
+            droneConnection.addEventListener(batteryListener);
         } catch (ConnectionException e) {
             LOGGER.error("Could not establish connection to drone");
         }
@@ -245,6 +250,8 @@ public class DroneController implements AutoCloseable {
         return this;
     }
 
+    public byte getBatteryLevel() { return batteryState; }
+
 
     public AudioController audio() {
 
@@ -340,6 +347,7 @@ public class DroneController implements AutoCloseable {
 
 
         public byte[] getLastJpg() {
+
             if (videoListener==null)
                 return new byte[0];
             byte[] lastJpeg = videoListener.getLastJpeg();
@@ -348,8 +356,10 @@ public class DroneController implements AutoCloseable {
              return lastJpeg;
         }
 
-        public boolean isEnabled() {
+        public boolean isVideoEnabled() {
             return enabled;
         }
+
+
     }
 }

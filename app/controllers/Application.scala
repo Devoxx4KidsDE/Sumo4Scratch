@@ -70,8 +70,8 @@ object Application extends Controller {
     Logger.info(s"Connecting: $ip : $port at $wlan")
 
     if (droneController != null) {
-      droneController.video().disableVideo();
-      droneController.close()
+      droneController.video.disableVideo;
+      droneController.close
     }
     try {
       // withoutQueue, so commands become synchronous
@@ -88,8 +88,8 @@ object Application extends Controller {
   def sumoClose = Action {
     Logger.info(s"Closing connection: $ip : $port at $wlan")
     if (droneConnection != null && droneController != null) {
-      droneController.video().disableVideo();
-      droneController.close()
+      droneController.video.disableVideo;
+      droneController.close
     }
     Ok
   }
@@ -153,8 +153,8 @@ object Application extends Controller {
 
     runAndMonitorCommand(id) {
       jumpType match {
-        case "hoch" | "High" => droneController.jumpHigh()
-        case "weit" | "Far" => droneController.jumpLong()
+        case "hoch" | "High" => droneController.jumpHigh
+        case "weit" | "Far" => droneController.jumpLong
       }
     }
     Ok
@@ -165,13 +165,13 @@ object Application extends Controller {
 
     runAndMonitorCommand(id) {
       trick match {
-        case "Drehung" | "Spin" => droneController.spin()
-        case "Drehsprung" | "JumpAndSpin" => droneController.spinJump()
-        case "Tippen" | "Tap" => droneController.tap()
-        case "Metronom" | "Metronome" => droneController.metronome()
-        case "Ondulation" | "Ondulation" => droneController.ondulation()
-        case "Schwanken" | "Shake" => droneController.slowShake()
-        case "Slalom" => droneController.slalom()
+        case "Drehung" | "Spin" => droneController.spin
+        case "Drehsprung" | "JumpAndSpin" => droneController.spinJump
+        case "Tippen" | "Tap" => droneController.tap
+        case "Metronom" | "Metronome" => droneController.metronome
+        case "Ondulation" | "Ondulation" => droneController.ondulation
+        case "Schwanken" | "Shake" => droneController.slowShake
+        case "Slalom" => droneController.slalom
       }
     }
     Ok
@@ -181,8 +181,8 @@ object Application extends Controller {
     Logger.info(s"video $switch")
     runAndMonitorCommand(id) {
       switch match {
-        case "an" | "on" => droneController.video().enableVideo()
-        case "aus" | "off" => droneController.video().disableVideo()
+        case "an" | "on" => droneController.video.enableVideo
+        case "aus" | "off" => droneController.video.disableVideo
       }
     }
     Ok
@@ -193,7 +193,7 @@ object Application extends Controller {
     Logger.info(s"taking photo $currentPhoto")
     runAndMonitorCommand(id) {
       if (droneController != null && droneController.video()!=null) {
-        val data = droneController.video().getLastJpg
+        val data = droneController.video.getLastJpg
         val imageLength: Int = data.length
         photos(currentPhoto) = new Array[Byte](imageLength)
         System.arraycopy(data, 0, photos(currentPhoto), 0, imageLength)
@@ -218,12 +218,15 @@ object Application extends Controller {
       message = s"_busy $movementId"
       Logger.info(s"poll $message")
     }
+    if (droneController != null) {
+      message = message + "\nbatterylevel "+ droneController.getBatteryLevel
+    }
 
     Ok(message)
   }
 
   /**
-    * Service called by Scratch if the programm is stopped by the user.
+    * Service called by Scratch if the program is stopped by the user.
     *
     * @return
     */
@@ -231,8 +234,8 @@ object Application extends Controller {
     Logger.info("resetting DroneConnection and running Command")
     movementId = 0
     if (droneConnection != null && droneController != null) {
-      droneController.video().disableVideo();
-      droneController.close()
+      droneController.video.disableVideo;
+      droneController.close
     }
     Ok
   }
@@ -271,14 +274,14 @@ object Application extends Controller {
     if (droneController == null || droneController.video()==null) {
       NotFound
     } else {
-      Ok(droneController.video().getLastJpg).as("image/jpeg")
+      Ok(droneController.video.getLastJpg).as("image/jpeg")
     }
   }
 
   def isFrameAvailable = Action {
     if (droneController == null || droneController.video()==null )
       Ok("no")
-    else if (droneController.video().getLastJpg().size==0)
+    else if (droneController.video.getLastJpg.size==0)
       Ok("no")
     else
       Ok("yes")
@@ -287,10 +290,21 @@ object Application extends Controller {
   def isVideoOn = Action {
     if (droneController == null || droneController.video()==null )
       Ok("no")
-    else if (droneController.video().isEnabled)
+    else if (droneController.video.isVideoEnabled)
       Ok("yes")
     else
       Ok("no")
   }
 
+  /**
+    * Return the battery level
+    * @return
+    */
+  def getBatteryLevel = Action {
+    if (droneController != null) {
+      Logger.info("" + droneController.getBatteryLevel)
+      Ok(""+ droneController.getBatteryLevel)
+    } else
+      Ok("unbekannt")
+  }
 }
