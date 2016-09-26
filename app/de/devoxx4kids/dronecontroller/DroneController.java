@@ -82,9 +82,9 @@ public class DroneController implements AutoCloseable {
     }
 
 
-    public DroneController pcmd(int speed, int degree) {
+    public DroneController pcmd(int speed, int degree, int waitingTime) {
 
-        this.droneConnection.sendCommand(Pcmd.pcmd(speed, degree));
+        this.droneConnection.sendCommand(Pcmd.pcmd(speed, degree, waitingTime));
 
         return this;
     }
@@ -92,7 +92,7 @@ public class DroneController implements AutoCloseable {
 
     public DroneController forward() {
 
-        pcmd(40, 0);
+        pcmd(40, 0, 500);
 
         return this;
     }
@@ -100,7 +100,7 @@ public class DroneController implements AutoCloseable {
 
     public DroneController backward() {
 
-        pcmd(-40, 0);
+        pcmd(-40, 0, 500);
 
         return this;
     }
@@ -115,16 +115,17 @@ public class DroneController implements AutoCloseable {
 
 
     public DroneController left(int degrees) {
-
-        pcmd(0, -degrees);
+        //TODO: optimize time based on degrees
+        pcmd(0, -degrees, 500);
 
         return this;
     }
 
 
     public DroneController right(int degrees) {
-
-        pcmd(0, degrees);
+        //TODO: optimize time based on degrees
+        LOGGER.debug("turning {}", degrees);
+        pcmd(0, degrees, 500);
 
         return this;
     }
@@ -271,6 +272,7 @@ public class DroneController implements AutoCloseable {
         public AudioController(DroneController droneController) {
 
             this.droneController = droneController;
+
         }
 
         public AudioController theme(AudioTheme.Theme theme) {
@@ -299,7 +301,7 @@ public class DroneController implements AutoCloseable {
 
         public AudioController unmute() {
 
-            volume(100);
+            volume(50);
 
             return this;
         }
@@ -323,9 +325,11 @@ public class DroneController implements AutoCloseable {
         }
 
         public VideoController enableVideo() {
-
-            videoListener = VideoListener.videoListener();
-            droneConnection.addEventListener(videoListener);
+            if (!enabled) { // make sure we do not add the video listener twice
+                videoListener = VideoListener.videoListener();
+                videoListener.setWriteToDisk(false);
+                droneConnection.addEventListener(videoListener);
+            }
             droneConnection.sendCommand(VideoStreaming.enableVideoStreaming());
             enabled = true;
             return this;

@@ -1,8 +1,6 @@
 package controllers
 
 
-import java.io.ByteArrayInputStream
-
 import de.devoxx4kids.dronecontroller.DroneController
 import de.devoxx4kids.dronecontroller.network.{DroneConnection, WirelessLanDroneConnection}
 import play.api._
@@ -105,14 +103,11 @@ object Application extends Controller {
     */
   def forward(id: Int, speed: Int, time: Int) = Action {
     Logger.info(s"forward ($id / $speed / $time)")
+
     runAndMonitorCommand(id) {
       var runtime = 0L
       var start = System.currentTimeMillis()
-      while (runtime < time) {
-        droneController.pcmd(speed, 0)
-        Thread.sleep(500)
-        runtime = System.currentTimeMillis() - start
-      }
+      droneController.pcmd(speed, 0, time)
     }
     Ok
 
@@ -120,20 +115,16 @@ object Application extends Controller {
 
   def backward(id: Int, speed: Int, time: Int) = Action {
     Logger.info(s"backward ($id / $speed / $time)")
+
     runAndMonitorCommand(id) {
-      var runtime = 0L
-      var start = System.currentTimeMillis()
-      while (runtime < time) {
-        droneController.pcmd(-speed, 0)
-        Thread.sleep(500)
-        runtime = System.currentTimeMillis() - start
-      }
+    droneController.pcmd(-speed, 0,time)
     }
     Ok
   }
 
   def left(id: Int, degrees: Int) = Action {
     Logger.info(s"left $degrees")
+
     runAndMonitorCommand(id) {
       droneController.left(degrees)
     }
@@ -142,6 +133,7 @@ object Application extends Controller {
 
   def right(id: Int, degrees: Int) = Action {
     Logger.info(s"right $degrees")
+
     runAndMonitorCommand(id) {
       droneController.right(degrees)
     }
@@ -179,6 +171,7 @@ object Application extends Controller {
 
   def video(id: Int, switch: String) = Action {
     Logger.info(s"video $switch")
+
     runAndMonitorCommand(id) {
       switch match {
         case "an" | "on" => droneController.video.enableVideo
@@ -191,6 +184,7 @@ object Application extends Controller {
 
   def takePhoto(id: Int) = Action {
     Logger.info(s"taking photo $currentPhoto")
+
     runAndMonitorCommand(id) {
       if (droneController != null && droneController.video()!=null) {
         val data = droneController.video.getLastJpg
@@ -208,12 +202,13 @@ object Application extends Controller {
 
   /**
     * Service called by Scratch to ask which command is currently processed
-    * Only supports one command at a time currently. Maybe extended by using a set of movementIds....
+    * Only supports one command at a time.
     *
     * @return
     */
   def poll() = Action {
     var message = ""
+
     if (movementId != 0) {
       message = s"_busy $movementId"
       Logger.info(s"poll $message")
@@ -232,6 +227,7 @@ object Application extends Controller {
     */
   def reset() = Action {
     Logger.info("resetting DroneConnection and running Command")
+
     movementId = 0
     if (droneConnection != null && droneController != null) {
       droneController.video.disableVideo;
@@ -253,6 +249,7 @@ object Application extends Controller {
   def runAndMonitorCommand(id: Int)(command: => Unit): Unit = {
     if (!initialized)
       return
+
     movementId = id
     command
     movementId = 0
@@ -271,6 +268,7 @@ object Application extends Controller {
   }
 
   def getVideoFrame = Action {
+
     if (droneController == null || droneController.video()==null) {
       NotFound
     } else {
@@ -279,6 +277,7 @@ object Application extends Controller {
   }
 
   def isFrameAvailable = Action {
+
     if (droneController == null || droneController.video()==null )
       Ok("no")
     else if (droneController.video.getLastJpg.size==0)
@@ -288,6 +287,7 @@ object Application extends Controller {
   }
 
   def isVideoOn = Action {
+
     if (droneController == null || droneController.video()==null )
       Ok("no")
     else if (droneController.video.isVideoEnabled)
@@ -301,6 +301,7 @@ object Application extends Controller {
     * @return
     */
   def getBatteryLevel = Action {
+
     if (droneController != null) {
       Logger.info("" + droneController.getBatteryLevel)
       Ok(""+ droneController.getBatteryLevel)
