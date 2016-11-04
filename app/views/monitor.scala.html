@@ -19,6 +19,8 @@ var p6 = document.getElementById("p6");
 var p7 = document.getElementById("p7");
 var p8 = document.getElementById("p8");
 
+var videoOnFlag= true;
+
 function init() {
 
     noise = document.getElementById("white");
@@ -97,20 +99,25 @@ function init() {
     p7.addEventListener("error",  function () { checkPhotoSize(p7);});
     p8.addEventListener("error",  function () { checkPhotoSize(p8);});
 
-/*
-    // doesn´t work ... why?
-    for (i=0; i<9; i++) {
-        var p = document.getElementById("p"+i);
-        p.addEventListener("error",  function () { checkPhotoSize(p);});
-    }
-*/
+    img.addEventListener("click",  function () { returnToVideo();});
+    p0.addEventListener("click",  function () { showImage(p0);});
+    p1.addEventListener("click",  function () { showImage(p1);});
+    p2.addEventListener("click",  function () { showImage(p2);});
+    p3.addEventListener("click",  function () { showImage(p3);});
+    p4.addEventListener("click",  function () { showImage(p4);});
+    p5.addEventListener("click",  function () { showImage(p5);});
+    p6.addEventListener("click",  function () { showImage(p6);});
+    p7.addEventListener("click",  function () { showImage(p7);});
+    p8.addEventListener("click",  function () { showImage(p8);});
 
     refreshVideo();
     refreshPhotos();
 }
 
 function refreshVideo() {
-    img.src = "app/videoframe" + "?t=" + new Date().getTime();
+    if (videoOnFlag==true) {
+        img.src = "app/videoframe" + "?t=" + new Date().getTime();
+    }
     setTimeout("refreshVideo()", 50);
 }
 
@@ -118,6 +125,18 @@ function checkPhotoSize(image) {
     if (image.naturalHeight==0) {
         image.src = "assets/images/whitenoise.gif";
     }
+}
+
+function showImage(pic) {
+    videoOnFlag = false;
+    img.originalSrc = img.src;
+    img.src = pic.src;
+
+}
+
+function returnToVideo() {
+    img.src = img.originalSrc;
+    videoOnFlag = true;
 }
 
 function refreshPhotos() {
