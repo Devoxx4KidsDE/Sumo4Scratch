@@ -46,11 +46,11 @@ object Application extends Controller {
   }
 
   def index = Action {
-    Ok(views.html.index(""))
+    Ok(views.html.monitor())
   }
 
   def monitor = Action {
-    Ok(views.html.monitor(""))
+    Ok(views.html.monitor())
   }
 
   /**
