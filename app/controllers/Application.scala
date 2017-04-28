@@ -8,20 +8,19 @@ import play.api.mvc._
 
 
 /**
- * This controller serves as the main "proxy" to receive Scratch's calls and routes them
- * to the respective methods of the drone controller.
- *
- * It also takes care that if a command is started there is a reporting back to Scratch as long as
- * the command is still running. Note that for simplicity currently only one command at a time is
- * allowed to be executed however this could be easily extend by not using movementId but a set of ids
- *
- * The following is based on Scratch' extension mechanism which has been documented here:
- * http://wiki.scratch.mit.edu/wiki/Scratch_Extension
- * but in particalur in the the following document:
- * http://wiki.scratch.mit.edu/w/images/ExtensionsDoc.HTTP-9-11.pdf
- *
- */
-
+  * This controller serves as the main "proxy" to receive Scratch's calls and routes them
+  * to the respective methods of the drone controller.
+  *
+  * It also takes care that if a command is started there is a reporting back to Scratch as long as
+  * the command is still running. Note that for simplicity currently only one command at a time is
+  * allowed to be executed however this could be easily extend by not using movementId but a set of ids
+  *
+  * The following is based on Scratch' extension mechanism which has been documented here:
+  * http://wiki.scratch.mit.edu/wiki/Scratch_Extension
+  * but in particalur in the the following document:
+  * http://wiki.scratch.mit.edu/w/images/ExtensionsDoc.HTTP-9-11.pdf
+  *
+  */
 object Application extends Controller {
 
   def ip = "192.168.2.1"
@@ -37,11 +36,11 @@ object Application extends Controller {
 
   var initialized = false
 
-  val maxPhotos:Int = 9
+  val maxPhotos: Int = 9
   var currentPhoto = 0
 
-  var photos: Array[Array[Byte]] = Array.ofDim[Byte](maxPhotos,2)
-  for( a <- 0 until maxPhotos){
+  var photos: Array[Array[Byte]] = Array.ofDim[Byte](maxPhotos, 2)
+  for (a <- 0 until maxPhotos) {
     photos(a) = new Array[Byte](0)
   }
 
@@ -110,14 +109,13 @@ object Application extends Controller {
       droneController.pcmd(speed, 0, time)
     }
     Ok
-
   }
 
   def backward(id: Int, speed: Int, time: Int) = Action {
     Logger.info(s"backward ($id / $speed / $time)")
 
     runAndMonitorCommand(id) {
-    droneController.pcmd(-speed, 0,time)
+      droneController.pcmd(-speed, 0, time)
     }
     Ok
   }
@@ -186,13 +184,13 @@ object Application extends Controller {
     Logger.info(s"taking photo $currentPhoto")
 
     runAndMonitorCommand(id) {
-      if (droneController != null && droneController.video()!=null) {
+      if (droneController != null && droneController.video() != null) {
         val data = droneController.video.getLastJpg
         val imageLength: Int = data.length
         photos(currentPhoto) = new Array[Byte](imageLength)
         System.arraycopy(data, 0, photos(currentPhoto), 0, imageLength)
         currentPhoto = currentPhoto + 1
-        if (currentPhoto>=maxPhotos)
+        if (currentPhoto >= maxPhotos)
           currentPhoto = 0
       }
     }
@@ -214,7 +212,7 @@ object Application extends Controller {
       Logger.info(s"poll $message")
     }
     if (droneController != null) {
-      message = message + "\nbatterylevel "+ droneController.getBatteryLevel
+      message = message + "\nbatterylevel " + droneController.getBatteryLevel
     }
 
     Ok(message)
@@ -261,6 +259,7 @@ object Application extends Controller {
 
   /**
     * Return the latest JPG of the videostream
+    *
     * @return
     */
   def getPhoto(id: Int) = Action {
@@ -269,7 +268,7 @@ object Application extends Controller {
 
   def getVideoFrame = Action {
 
-    if (droneController == null || droneController.video()==null) {
+    if (droneController == null || droneController.video() == null) {
       NotFound
     } else {
       Ok(droneController.video.getLastJpg).as("image/jpeg")
@@ -278,9 +277,9 @@ object Application extends Controller {
 
   def isFrameAvailable = Action {
 
-    if (droneController == null || droneController.video()==null )
+    if (droneController == null || droneController.video() == null)
       Ok("no")
-    else if (droneController.video.getLastJpg.size==0)
+    else if (droneController.video.getLastJpg.size == 0)
       Ok("no")
     else
       Ok("yes")
@@ -288,7 +287,7 @@ object Application extends Controller {
 
   def isVideoOn = Action {
 
-    if (droneController == null || droneController.video()==null )
+    if (droneController == null || droneController.video() == null)
       Ok("no")
     else if (droneController.video.isVideoEnabled)
       Ok("yes")
@@ -298,13 +297,14 @@ object Application extends Controller {
 
   /**
     * Return the battery level
+    *
     * @return
     */
   def getBatteryLevel = Action {
 
     if (droneController != null) {
       Logger.info("" + droneController.getBatteryLevel)
-      Ok(""+ droneController.getBatteryLevel)
+      Ok("" + droneController.getBatteryLevel)
     } else
       Ok("unbekannt")
   }
