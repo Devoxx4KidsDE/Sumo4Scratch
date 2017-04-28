@@ -1,0 +1,38 @@
+body {
+    background: url('/assets/images/mars.png') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.opacity {
+    opacity: 0.4;
+}
+
+.big-picture-box {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+}
+.big-picture {
+    max-width: 640px;
+    max-height: 480px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.small-pictures-box {
+    display: flex;
+    justify-content: center;
+}
+.small-pictures {
+    border: 1px solid black;
+    width: 64px;
+    height: 48px;
+    cursor: pointer;
+}
+
+.small-pictures:not(:first-child) {
+    margin-left: 2px;
+}
