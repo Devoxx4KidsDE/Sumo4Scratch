@@ -1,5 +1,11 @@
 $(function () {
 
+    // disable logging
+    let logger = createLogger();
+    if (!(getURLParameter('logger', false) === 'true')) {
+        logger.disableLogger();
+    }
+
     let refreshVideoTimeInMs = getURLParameter('refreshVideoTimeInMs', 50);
     let refreshVideoDisabledTimeInMs = getURLParameter('refreshVideoDisabledRetryTimeInMs', 2000);
     let refreshPictureOnMonitorTimeInMs = getURLParameter('refreshPictureOnMonitorTimeInMs', 2000);
@@ -112,5 +118,25 @@ $(function () {
 
     function getURLParameter(name, defaultValue = undefined) {
         return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || defaultValue;
+    }
+
+    function createLogger() {
+        let oldConsoleLog = null;
+        let pub = {};
+
+        pub.enableLogger = function enableLogger() {
+            if (oldConsoleLog === null)
+                return;
+
+            window['console']['log'] = oldConsoleLog;
+        };
+
+        pub.disableLogger = function disableLogger() {
+            oldConsoleLog = console.log;
+            window['console']['log'] = function () {
+            };
+        };
+
+        return pub;
     }
 });
