@@ -1,4 +1,4 @@
-![Devoxx4Kids](public/images/logo.jpg)
+![Devoxx4Kids](./public/images/logo.jpg)
 
 
 # ![Devoxx4Kids](./jumping-sumo.jpg)  Sumo4scratch  ![Devoxx4Kids](./jumping-sumo-flipped.jpg)
