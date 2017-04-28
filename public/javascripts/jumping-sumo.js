@@ -1,8 +1,9 @@
 $(function () {
 
-    let refreshVideoTimeInMs = 50;
-    let refreshOnErrorTimeInMs = 2000;
-    let refreshPictureTimeInMs = 2000;
+    let refreshVideoTimeInMs = getURLParameter('refreshVideoTimeInMs', 50);
+    let refreshVideoDisabledTimeInMs = getURLParameter('refreshVideoDisabledRetryTimeInMs', 2000);
+    let refreshPictureOnMonitorTimeInMs = getURLParameter('refreshPictureOnMonitorTimeInMs', 2000);
+    let refreshPictureTimeInMs = getURLParameter('refreshPictureTimeInMs', 2000);
     let pictureOnMonitor = false;
 
     $('#monitor').on('click', function () {
@@ -23,7 +24,7 @@ $(function () {
 
         if (pictureOnMonitor) {
             console.log('picture on monitor');
-            setTimeout(refreshVideo, refreshOnErrorTimeInMs);
+            setTimeout(refreshVideo, refreshPictureOnMonitorTimeInMs);
             return;
         }
 
@@ -35,9 +36,9 @@ $(function () {
             setTimeout(refreshVideo, refreshVideoTimeInMs);
         }
         else {
-            console.log('Cannot display Video stream: video is' + videoOn + ' - frame is available ' + frameAvailable);
+            console.log('Cannot display Video stream: video is ' + videoOn + ' - frame is available ' + frameAvailable);
             $('#monitor').addClass('opacity').attr('src', 'assets/images/novideo.jpg');
-            setTimeout(refreshVideo, refreshOnErrorTimeInMs);
+            setTimeout(refreshVideo, refreshVideoDisabledTimeInMs);
         }
     }
 
@@ -107,5 +108,9 @@ $(function () {
         });
 
         return result;
+    }
+
+    function getURLParameter(name, defaultValue = undefined) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || defaultValue;
     }
 });
