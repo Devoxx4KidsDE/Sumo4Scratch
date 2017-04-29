@@ -103,8 +103,6 @@ object Application extends Controller {
     Logger.info(s"forward ($id / $speed / $time)")
 
     runAndMonitorCommand(id) {
-      var runtime = 0L
-      var start = System.currentTimeMillis()
       droneController.pcmd(speed, 0, time)
     }
     Ok
