@@ -75,7 +75,6 @@ object Application extends Controller {
       droneConnection = new WirelessLanDroneConnection(ip, port, wlan)
       droneController = new DroneController(droneConnection)
       initialized = true
-      OK
     } catch {
       case e: Exception => ServiceUnavailable
     }
