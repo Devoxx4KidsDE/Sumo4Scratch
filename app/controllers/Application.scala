@@ -31,8 +31,8 @@ object Application extends Controller {
 
   var movementId: Int = 0
 
-  var droneConnection: DroneConnection = null
-  var droneController: DroneController = null
+  var droneConnection: DroneConnection = _
+  var droneController: DroneController = _
 
   var initialized = false
 
@@ -67,8 +67,8 @@ object Application extends Controller {
     Logger.info(s"Connecting: $ip : $port at $wlan")
 
     if (droneController != null) {
-      droneController.video.disableVideo;
-      droneController.close
+      droneController.video.disableVideo
+      droneController.close()
     }
     try {
       // withoutQueue, so commands become synchronous
@@ -85,8 +85,8 @@ object Application extends Controller {
   def sumoClose = Action {
     Logger.info(s"Closing connection: $ip : $port at $wlan")
     if (droneConnection != null && droneController != null) {
-      droneController.video.disableVideo;
-      droneController.close
+      droneController.video.disableVideo
+      droneController.close()
     }
     Ok
   }
@@ -228,8 +228,8 @@ object Application extends Controller {
 
     movementId = 0
     if (droneConnection != null && droneController != null) {
-      droneController.video.disableVideo;
-      droneController.close
+      droneController.video.disableVideo
+      droneController.close()
     }
     Ok
   }
