@@ -278,7 +278,7 @@ object Application extends Controller {
 
     if (droneController == null || droneController.video() == null)
       Ok("no")
-    else if (droneController.video.getLastJpg.size == 0)
+    else if (droneController.video.getLastJpg.length == 0)
       Ok("no")
     else
       Ok("yes")
