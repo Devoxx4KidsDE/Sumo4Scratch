@@ -19,7 +19,6 @@ body {
     max-width: 640px;
     max-height: 480px;
     border: 1px solid black;
-    cursor: pointer;
 }
 
 .small-pictures-box {
@@ -35,4 +34,13 @@ body {
 
 .small-pictures:not(:first-child) {
     margin-left: 2px;
+}
+
+.border-highlight {
+    border: 1px solid whitesmoke;
+}
+
+.vertical-line {
+    margin: 0 4px;
+    border-left: 1px solid whitesmoke;
 }

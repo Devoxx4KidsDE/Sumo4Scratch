@@ -8,17 +8,18 @@ $(function () {
 
     let refreshVideoTimeInMs = getURLParameter('refreshVideoTimeInMs', 50);
     let refreshVideoDisabledTimeInMs = getURLParameter('refreshVideoDisabledRetryTimeInMs', 2000);
-    let refreshPictureOnMonitorTimeInMs = getURLParameter('refreshPictureOnMonitorTimeInMs', 2000);
     let refreshPictureTimeInMs = getURLParameter('refreshPictureTimeInMs', 2000);
     let pictureOnMonitor = false;
 
-    $('#monitor').on('click', function () {
+    $('#video').on('click', function () {
         pictureOnMonitor = false;
+        highlight($(this));
         refreshVideo();
     });
 
-    $('.small-pictures').on('click', function () {
+    $('.small-pictures:not(#video)').on('click', function () {
         pictureOnMonitor = true;
+        highlight($(this));
         $('#monitor').attr('src', $(this).attr('src'));
     });
 
@@ -28,38 +29,43 @@ $(function () {
     function refreshVideo() {
         console.log('//> trying to refresh video');
 
-        if (pictureOnMonitor) {
-            console.log('picture on monitor');
-            setTimeout(refreshVideo, refreshPictureOnMonitorTimeInMs);
-            return;
-        }
-
         let videoOn = isVideoOn();
         let frameAvailable = isFrameAvailable();
         if (videoOn && frameAvailable) {
             console.log('updating monitor with new frame');
-            $('#monitor').removeClass('opacity').attr('src', 'app/videoframe?t=' + new Date().getTime());
+            let videoImage = 'app/videoframe?t=' + new Date().getTime();
+
+            if (!pictureOnMonitor) {
+                console.log('picture on monitor');
+                $('#monitor').removeClass('opacity').attr('src', videoImage);
+            }
+
+            $('#video').removeClass('opacity').attr('src', videoImage);
             setTimeout(refreshVideo, refreshVideoTimeInMs);
         }
         else {
             console.log('Cannot display Video stream: video is ' + videoOn + ' - frame is available ' + frameAvailable);
-            $('#monitor').addClass('opacity').attr('src', 'assets/images/novideo.jpg');
+            if (!pictureOnMonitor) {
+                $('#monitor').addClass('opacity').attr('src', 'assets/images/novideo.jpg');
+            }
+            $('#video').addClass('opacity').attr('src', 'assets/images/novideo.jpg');
             setTimeout(refreshVideo, refreshVideoDisabledTimeInMs);
         }
     }
 
     function refreshPhotos() {
         console.log('//> trying to refresh photos');
-        for (let i = 0; i < 9; i++) {
-            let picturePath = 'app/photo/' + i + '?t=' + new Date().getTime();
+        $('.small-pictures:not(#video)').each(function (index) {
+            let $this = $(this);
+            let picturePath = 'app/photo/' + index + '?t=' + new Date().getTime();
             checkIfImageExists(picturePath, function (exists) {
                 if (exists) {
-                    $('#p' + i).removeClass('opacity').attr('src', picturePath);
+                    $this.removeClass('opacity').attr('src', picturePath);
                 } else {
-                    $('#p' + i).addClass('opacity');
+                    $this.addClass('opacity');
                 }
             });
-        }
+        });
 
         setTimeout(refreshPhotos, refreshPictureTimeInMs);
     }
@@ -138,5 +144,10 @@ $(function () {
         };
 
         return pub;
+    }
+
+    function highlight($this) {
+        $('.small-pictures').removeClass('border-highlight');
+        $this.addClass('border-highlight');
     }
 });
